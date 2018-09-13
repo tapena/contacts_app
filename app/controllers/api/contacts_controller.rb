@@ -1,6 +1,15 @@
 class Api::ContactsController < ApplicationController
   def index
     @contacts = Contact.all
+    search_term = params[:search]
+  if search_term
+    @contacts = @ontacts.where(
+                              "first_name iLIKE ? OR last_name iLIKE ? OR email iLIKE ?", 
+                              "%#{search_term}%", 
+                              "%#{search_term}%", 
+                              "%#{search_term}%"
+                              )
+  end
     render 'index.json.jbuilder'
   end
 
@@ -27,7 +36,6 @@ class Api::ContactsController < ApplicationController
     @contact = Contact.find(params[:id])
 
     @contact.first_name = params[:first_name] || @contact.first_name
-    @contact.middle_name = params[:middle_name] || @contact.middle_name
     @contact.last_name = params[:last_name] || @contact.last_name
     @contact.email = params[:email] || @contact.email
     @contact.phone_number = params[:phone_number] || @contact.phone_number
